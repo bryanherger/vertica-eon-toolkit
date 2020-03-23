@@ -1,5 +1,4 @@
-# aws.sh: common variables and functions for Vertica scripts.  Run from MC or Vertica cluster node, be sure SSH_KEY is set correctly
-# Use "aws configure" to set access keys, or use IAM user/role.
+# aws.sh: common variables and functions for Vertica scripts.
 export SSH_IDENTITY="~/.ssh/id_rsa"
 export VSQL_PASSWORD='dbadmin'
 export VSQL_HOST=10.11.12.228

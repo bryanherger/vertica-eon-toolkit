@@ -2,11 +2,9 @@ We created these scripts to help during a POC, ideally you can install these scr
 
 Make sure you try this in a test environment. The scripts don't validate all the different errors.
 
-The scripts are not super clean, but they work.  Ideally, you should use these scripts for examples to build and test scripts for your specific environment and use case.
+The scripts are not super clean, but they work.
 
-Most scripts take an argument, a number of nodes, a list of IP's.  If the usage calls for a list of IP's, this is a CSV list of instance private IP's with no spaces.
-
-Configuration is defined in aws.sh, basic environment settings sourced by other scripts:
+aws.sh, basic environment settings:
 
 VSQL_PASSWORD, password for database, I assume the user is dbadmin
 
