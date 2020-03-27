@@ -79,6 +79,9 @@ public class AwsVerticaDemo {
         params.setProperty("awsSecretAccessKey", awsSecretAccessKey);
         params.setProperty("awsRegion", awsRegion);
         params.setProperty("awsKeyPairName", awsKeyPairName);*/
+        if (StringUtils.isNotBlank(args.awsVpc)) { params.setProperty("awsVpc", args.awsVpc); }
+        if (StringUtils.isNotBlank(args.awsSubnetId)) { params.setProperty("awsSubnetId", args.awsSubnetId); }
+        if (StringUtils.isNotBlank(args.awsSecurityGroup)) { params.setProperty("awsSecurityGroup", args.awsSecurityGroup); }
         if (StringUtils.isNotBlank(args.communalStorage)) { params.setProperty("awsS3Bucket", args.communalStorage); }
         if (StringUtils.isNotBlank(args.clusterSize)) { params.setProperty("clusterSize", args.clusterSize); }
         if (StringUtils.isNotBlank(args.primarySubcluster)) { params.setProperty("DBPRIMARY", args.primarySubcluster); }
@@ -393,6 +396,12 @@ class Args {
     public String propertiesFile = "d:\\temp\\github\\eonaws.properties";
     @Parameter(names = {"--tag"}, description = "Tag name for resources (if omitted, use AvsVerticaDemo)")
     public String tagBaseName = "";
+    @Parameter(names = {"--aws-vpc"}, description = "AWS VPC for resources (if omitted, use account default)")
+    public String awsVpc = "";
+    @Parameter(names = {"--aws-subnetid"}, description = "AWS Subnet for resources (if omitted, use account default)")
+    public String awsSubnetId = "";
+    @Parameter(names = {"--aws-securitygroup"}, description = "AWS Security Group for resources (if omitted, we will create one)")
+    public String awsSecurityGroup = "";
     @Parameter(names = {"--demomode"}, description = "Which demo mode to run (if omitted or invalid, demo spot instances and exit)")
     public String demoMode = null;
     @Parameter(names = {"-d","--database"}, description = "Vertica database name")

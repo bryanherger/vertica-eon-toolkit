@@ -91,11 +91,12 @@ public class VerticaTasks {
         }
     }
 
-    public void getStatus(Properties params) throws Exception {
+    public List<AwsInstance> getStatus(Properties params) throws Exception {
         List<AwsInstance> aList = getInstancesByTag(params, "VerticaDatabase", params.getProperty("DBNAME"));
         for (AwsInstance a : aList) {
             LOG.info("getStatus found:"+a);
         }
+        return aList;
     }
 
     public void proxyServer(Properties params) throws Exception {
@@ -219,21 +220,27 @@ public class VerticaTasks {
         params.setProperty("serviceTag", spotTagBaseName + "-Vertica");
         params.setProperty("verticaDataTag", "subcluster::" + spotTagBaseName);
         //Ec2Client ec2 = Ec2Client.builder().build();
-        String verticaSecurityGroup = params.getProperty("verticaSecurityGroup");
-        if (StringUtils.isEmpty(verticaSecurityGroup)) {
+        String verticaSecurityGroup = params.getProperty("awsSecurityGroup");
+        if (StringUtils.isBlank(verticaSecurityGroup)) {
             verticaSecurityGroup = createVerticaSecurityGroup(spotTagBaseName + "-SpotSecurityGroup");
         }
         ArrayList<String> securityGroups = new ArrayList<>();
         securityGroups.add(verticaSecurityGroup);
         // Add the launch specifications to the request. Use Vertica AMI here...
+        String awsSubnetId = params.getProperty("awsSubnetId");
         InstanceType spotInstanceType = StringUtils.isEmpty(instanceType) ? InstanceType.C5_LARGE : InstanceType.fromValue(instanceType);
         RequestSpotLaunchSpecification launchSpecification = RequestSpotLaunchSpecification.builder()
                 .imageId(AwsVerticaService.getVerticaAmiId())
                 .instanceType(spotInstanceType)
                 .securityGroups(securityGroups)
+                .subnetId(awsSubnetId)
                 .keyName(params.getProperty("awsKeyPairName")).build();
         // Request instance with a bid price
-        RequestSpotInstancesRequest requestRequest = RequestSpotInstancesRequest.builder().availabilityZoneGroup("us-east-1d").instanceCount(instanceCount).launchSpecification(launchSpecification).build();
+        String awsAZGroup = params.getProperty("awsAvailabilityZoneGroup");
+        RequestSpotInstancesRequest requestRequest = RequestSpotInstancesRequest.builder()
+                .availabilityZoneGroup(StringUtils.isBlank(awsAZGroup)?"us-east-1d":awsAZGroup)
+                .instanceCount(instanceCount)
+                .launchSpecification(launchSpecification).build();
         // Call the RequestSpotInstance API.
         RequestSpotInstancesResponse requestResult = ec2.requestSpotInstances(requestRequest);
         List<SpotInstanceRequest> requestResponses = requestResult.spotInstanceRequests();
