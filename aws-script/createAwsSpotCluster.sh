@@ -13,9 +13,9 @@ subCluster=${2}
 launchGroup=${subCluster}_`date +%s`
 echo ${launchGroup} > ${subCluster}.lgid
 # step 1: request spot instances
-# part A build launch template.  You may need to modify this to match your AWS - e.g. security groups, subnets, VPC...
+# part A build launch template.  You WILL need to modify this to match your AWS - required items include security groups, subnets, VPC...
 # see docs at https://docs.aws.amazon.com/cli/latest/reference/ec2/request-spot-instances.html
-echo -e \{\"ImageId\":\"${AWS_IMAGE_ID}\",\"KeyName\":\"${AWS_KEY_NAME}\",\"InstanceType\":\"${AWS_INSTANCE_TYPE}\",\"NetworkInterfaces\":\[\{\"DeviceIndex\":0,\"AssociatePublicIpAddress\":true\}\]\} > spec.json
+echo -e \{\"ImageId\":\"${AWS_IMAGE_ID}\",\"SecurityGroupIds\":[\"${SECURITY_GROUP}\"],\"KeyName\":\"${AWS_KEY_NAME}\",\"InstanceType\":\"${AWS_INSTANCE_TYPE}\",\"NetworkInterfaces\":\[\{\"DeviceIndex\":0,\"AssociatePublicIpAddress\":true\,\"SubnetId\":\"${SUBNET}\"}\]\} > spec.json
 
 # part B launch
 aws ec2 request-spot-instances --instance-count ${icount} --launch-specification file://spec.json --launch-group ${launchGroup}

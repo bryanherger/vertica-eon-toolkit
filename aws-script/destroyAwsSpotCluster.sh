@@ -1,4 +1,4 @@
-# destroySpotSubcluster.sh: remove a new subcluster and shut down the associated spot instances.
+# destroyAwsSpotSubcluster.sh: remove a new subcluster and shut down the associated spot instances.
 #!/bin/bash
 set -eu
 . aws.sh
@@ -22,5 +22,8 @@ ssh -i ${SSH_KEY} dbadmin@${VSQL_HOST} "sudo /opt/vertica/sbin/update_vertica -R
 
 # step 2: cancel spot instances
 sirids=`aws ec2 describe-spot-instance-requests --filter "Name=launch-group,Values=${launchGroup}" --query 'SpotInstanceRequests[].SpotInstanceRequestId'`
-aws ec2 cancel-spot-instance-requests --spot-instance-request-ids "${sirids}"
+# I thought this would work, but per AWS docs: "Warning: Canceling a Spot Instance request does not terminate running Spot Instances associated with the request."
+# aws ec2 cancel-spot-instance-requests --spot-instance-request-ids "${sirids}"
+# so we take the list of ID's from above and:
+aws ec2 terminate-instances --instance-ids "${instances}"
 

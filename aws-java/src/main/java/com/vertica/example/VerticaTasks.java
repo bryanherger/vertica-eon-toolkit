@@ -115,11 +115,15 @@ public class VerticaTasks {
         // determine which subcluster we connected tom so we connect somewhere other than the subcluster we're removing!
         // select subcluster_name, is_primary from current_session left join subclusters using (node_name);
         String scName = params.getProperty("DBSECONDARY");
+        AwsVerticaService avs = new AwsVerticaService();
+        List<String> nodes = avs.runQueryWithResult(params, "SELECT node_address FROM NODES where subcluster_name = '"+scName+"';");
         SshUtil ssh = new SshUtil();
         String stopDb1 = "sudo -u dbadmin /opt/vertica/bin/admintools -t stop_subcluster -c "+scName+" -d "+params.getProperty("DBNAME")+" -p "+params.getProperty("DBPASS");
         ssh.ssh(params, stopDb1);
         String stopDb2 = "sudo -u dbadmin /opt/vertica/bin/admintools -t db_remove_subcluster -c "+scName+" -d "+params.getProperty("DBNAME")+" -p "+params.getProperty("DBPASS");
         ssh.ssh(params, stopDb2);
+        String rmNodes = "sudo /opt/vertica/sbin/update_vertica --remove-hosts " + String.join(",", nodes) + " --failure-threshold NONE";
+        ssh.ssh(params, rmNodes);
         //"VerticaDatabaseCluster").value(clusterName
         List<AwsInstance> aList = getInstancesByTag(params, "VerticaDatabaseCluster", scName);
         List<String> sirIds = new ArrayList<>();
