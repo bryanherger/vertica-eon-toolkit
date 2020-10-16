@@ -36,7 +36,7 @@ variable "vertica_gcsauth" {
 }
 
 variable "vertica_communal" {
-  default = "gs://bryanh-vertica-poc/eongcp"
+  default = "gs://X/Y"
 }
 
 variable "vertica_dbname" {
