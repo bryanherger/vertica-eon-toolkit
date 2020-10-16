@@ -47,3 +47,8 @@ variable "vertica_dbpw" {
   default = "XYZ"
 }
 
+variable "vertica_license" {
+  # default CE sets Community Edition with 3 nodes and 1 TB. Set file here and uncomment provisioner in main.tf to use more TB / more nodes
+  default = "CE"
+}
+

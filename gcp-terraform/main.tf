@@ -88,9 +88,16 @@ resource "null_resource" "provision_vertica_cluster" {
     source      = "gcp.key"
     destination = "/tmp/gcp.key"
   }
+/*
+// uncomment this block and provide correct locations to use a license other than CE
+  provisioner "file" {
+    source      = "vertica.license"
+    destination = "${var.vertica_license}"
+  }
+*/
   provisioner "remote-exec" {
     inline = [
-      "sudo /opt/vertica/sbin/install_vertica -i /tmp/gcp.key -L CE -Y --failure-threshold NONE -s ${join(",", formatlist("%v", google_compute_instance.vertica.*.network_interface.0.network_ip))}",
+      "sudo /opt/vertica/sbin/install_vertica -i /tmp/gcp.key -L ${var.vertica_license} -Y --failure-threshold NONE -s ${join(",", formatlist("%v", google_compute_instance.vertica.*.network_interface.0.network_ip))}",
       "echo gcsauth = ${var.vertica_gcsauth} >> /opt/vertica/config/admintools.conf",
       "/opt/vertica/bin/admintools -t revive_db -d ${var.vertica_dbname} --communal-storage-location=${var.vertica_communal} -s ${join(",", formatlist("%v", google_compute_instance.vertica.*.network_interface.0.network_ip))}",
       "/opt/vertica/bin/admintools -t start_db -d ${var.vertica_dbname} -p ${var.vertica_dbpw}",
