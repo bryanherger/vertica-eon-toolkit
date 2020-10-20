@@ -8,6 +8,8 @@ Obtain and fill all values in variables.tf.  To apply a license, you may also ne
 
 ### Quick start
 
+Edit variables.tf
+
 `terraform apply`
 
 To change number of nodes, `terraform apply -var 'cluster_member_count=X'`
