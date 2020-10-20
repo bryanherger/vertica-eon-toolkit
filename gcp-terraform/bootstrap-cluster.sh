@@ -1,5 +1,6 @@
 #!/bin/bash
 # NEW='10.142.0.19,10.142.0.17,10.142.0.18,10.142.0.20'
+echo `date` $1 >> /home/dbadmin/node_changes.txt
 NEW=$1
 GCSAUTH=$2
 COMMUNAL=$3
@@ -24,6 +25,7 @@ for w in $NEW; do
   if ! echo "$OLD" | grep -q "$w" ; then
     added=1
     DELTA="$DELTA $w"
+    SSHTEST="$w"
   fi
 done
 for w in $OLD; do
@@ -40,12 +42,24 @@ DELTA="$(echo -e "${DELTA}" | sed -e 's/^[[:space:]]*//')"
 DELTA=${DELTA// /,}
 if [ "$added" ]; then
   echo "added: NEW='$NEW' OLD='$OLD' DELTA='$DELTA'"
+  echo Waiting for host $SSHTEST
+  ping -c 5 -w 30 $SSHTEST
+  sleep 15
+  sudo /opt/vertica/sbin/install_vertica -i /home/dbadmin/gcp.key -L $DBLIC -Y --failure-threshold NONE -A $DELTA
+  sudo -u dbadmin /opt/vertica/bin/admintools -t db_add_node -d $DBNAME -p $DBPW -s $DELTA
+  vsql -U dbadmin -w $DBPW -c "select rebalance_shards();"
+  echo $NEW > /home/dbadmin/ips.txt
   exit
 fi
 if [ "$removed" ]; then
   echo "removed: NEW='$NEW' OLD='$OLD' DELTA='$DELTA'"
+  sudo -u dbadmin /opt/vertica/bin/admintools -t db_remove_node -d $DBNAME -p $DBPW -s $DELTA
+  sudo /opt/vertica/sbin/install_vertica -i /home/dbadmin/gcp.key -L $DBLIC -Y --failure-threshold NONE -R $DELTA
+  vsql -U dbadmin -w $DBPW -c "select rebalance_shards();"
+  echo $NEW > /home/dbadmin/ips.txt
   exit
 fi
 echo "no change: NEW='$NEW' OLD='$OLD'"
-
+# get IP addresses: ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1'
+# lookup other nodes: see https://github.com/SravanthiCham/Srav_new/blob/master/packer-terraform-all-active-nginx-plus-lb/terraform/instance.tf
 
