@@ -22,38 +22,41 @@ Please refer to the documentation for all possible options.  The following steps
 
 Install cert-manager:
 
-$ kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.5.3/cert-manager.yaml
+`$ kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.5.3/cert-manager.yaml`
 
 Verify cert-manager is running:
 
+```
 $ kubectl get pods --namespace cert-manager
 NAME                                       READY   STATUS    RESTARTS   AGE
 cert-manager-7dd5854bb4-skks7              1/1     Running   5          12d
 cert-manager-cainjector-64c949654c-9nm2z   1/1     Running   5          12d
 cert-manager-webhook-6bdffc7c9d-b7r2p      1/1     Running   5          12d
+```
 
 Configure the Vertica helm chart repository:
 
-$ helm repo add vertica-charts https://vertica.github.io/charts
+`$ helm repo add vertica-charts https://vertica.github.io/charts`
 
 Update the repository to ensure you have the latest version:
 
-$ helm repo update
+`$ helm repo update`
 
 Install the VerticaDB operator:
 
-$ helm install vdb-op vertica-charts/verticadb-operator
+`$ helm install vdb-op vertica-charts/verticadb-operator`
 
 Create a secret storing your S3 keys:
 
-$ kubectl create secret generic s3-creds --from-literal=accesskey=yourAccesskey --from-literal=secretkey=yourSecretkey
+`$ kubectl create secret generic s3-creds --from-literal=accesskey=yourAccesskey --from-literal=secretkey=yourSecretkey`
 
 Create a secret storing your dbadmin (superuser) password:
 
-$ kubectl create secret generic su-passwd --from-literal=password=yourPassword
+`$ kubectl create secret generic su-passwd --from-literal=password=yourPassword`
 
 Create a YAML file "vertica.yaml" to configure a Vertica database - you must edit path and endpoint to match your environment:
 
+```
 apiVersion: vertica.com/v1beta1
 kind: VerticaDB
 metadata:
@@ -72,13 +75,14 @@ spec:
       size: 3
       serviceType: LoadBalancer
       nodePort: 32001
+```
 
 Apply the YAML file:
 
-$ kubectl create -f <vertica.yaml>
+`$ kubectl create -f <vertica.yaml>`
 
 Check service status:
 
-$ kubectl get svc
+`$ kubectl get svc`
 
 When the service is up and external IP and port are available, you will be able to connect as dbadmin with your Vertica client.
