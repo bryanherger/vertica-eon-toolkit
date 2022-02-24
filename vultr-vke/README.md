@@ -86,4 +86,29 @@ Check service status:
 
 `$ kubectl get svc`
 
-When the service is up and external IP and port are available, you will be able to connect as dbadmin with your Vertica client.
+When the service is up and the external IP and port are available, you will be able to connect as dbadmin with your Vertica client:
+
+```
+$ kubectl get svc
+NAME                                 TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)                         AGE
+kubernetes                           ClusterIP      10.96.0.1       <none>        443/TCP                         25m
+vertica-demo                         ClusterIP      None            <none>        22/TCP                          18m
+vertica-demo-defaultsubcluster       LoadBalancer   10.96.39.25     x.y.z.w       5433:32001/TCP,5444:31390/TCP   18m
+verticadb-operator-webhook-service   ClusterIP      10.100.167.55   <none>        443/TCP                         20m
+
+
+$ vsql -h x.y.z.w -p 5433 -U dbadmin -w secret-password
+Welcome to vsql, the Vertica Analytic Database interactive terminal.
+
+Type:  \h or \? for help with vsql commands
+       \g or terminate with semicolon to execute query
+       \q to quit
+
+dbadmin=> select * from nodes;
+     node_name     |      node_id      | node_state | is_primary | is_readonly | node_address  | node_address_family | export_address | export_address_family |                  catalog_path                  | node_type | is_ephemeral | standing_in_for |  subcluster_name  |     last_msg_from_node_at     | node_down_since |                     build_info
+-------------------+-------------------+------------+------------+-------------+---------------+---------------------+----------------+-----------------------+------------------------------------------------+-----------+--------------+-----------------+-------------------+-------------------------------+-----------------+----------------------------------------------------
+ v_vertdb_node0003 | 45035996273704984 | UP         | t          | f           | 10.244.66.4   | ipv4                | 10.244.66.4    | ipv4                  | /data/vertdb/v_vertdb_node0003_catalog/Catalog | PERMANENT | f            |                 | defaultsubcluster | 2022-02-23 23:57:25.005626+00 |                 | v11.1.0-0-669fd97287b9c05ae8b69656c04c16cffa268024
+ v_vertdb_node0001 | 45035996273842972 | UP         | t          | f           | 10.244.35.198 | ipv4                | 10.244.35.198  | ipv4                  | /data/vertdb/v_vertdb_node0001_catalog/Catalog | PERMANENT | f            |                 | defaultsubcluster | 2022-02-24 00:00:55.02184+00  |                 | v11.1.0-0-669fd97287b9c05ae8b69656c04c16cffa268024
+ v_vertdb_node0002 | 45035996273842976 | UP         | t          | f           | 10.244.156.68 | ipv4                | 10.244.156.68  | ipv4                  | /data/vertdb/v_vertdb_node0002_catalog/Catalog | PERMANENT | f            |                 | defaultsubcluster | 2022-02-23 22:57:57.528649+00 |                 | v11.1.0-0-669fd97287b9c05ae8b69656c04c16cffa268024
+(3 rows)
+```
