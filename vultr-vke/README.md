@@ -113,6 +113,6 @@ dbadmin=> select * from nodes;
 (3 rows)
 ```
 
-Now that the database is running, you can add data with SQL commands like INSERT, and load files from S3 using COPY.  Since Vertica is already configured to access the S3 bucket where the database resides, you can discover DDL and import data from the bucket with a few commands.
+Now that the database is running, you can add data with SQL commands like INSERT, and load files from S3 using COPY.  An example SQL file in this repo `k8sdmemo.sql` will fetch a small CSV data file, load it into a table, and run a SQL aggregate.  Since Vertica is already configured to access the S3 bucket where the database resides, you can discover DDL and import data from the bucket with a few commands.
 
 You can also scale the database cluster with `kubectl edit`.  Simply edit the subclusters.size field to the new target size (CE license only allows 1-3 nodes); the database shards will be rebalanced automatically.  Monitor the cluster change with `kubectl wait`.
