@@ -4,7 +4,7 @@
 
 Vertica is an industry-leading analytics platform providing fast, flexible, extensible, and SQL-compatible analytics on data lakes and data warehouses.  Learn more about Vertica at https://www.vertica.com/about/
 
-Vertica's architecture separates compute and storage allows cost-effective, scalable, secure and performant operation on cloud and containerized platforms like Kubernetes.  Vertica provides comprehensive open-source tooling to enable deployment and management on Kuberenetes, which we will demonstrate in this exercise. 
+Vertica's architecture separates compute and storage allows cost-effective, scalable, secure and performant operation on cloud and containerized platforms like Kubernetes.  Vertica provides comprehensive open-source tooling to enable deployment and management on Kubernetes which allows deployment of a fully functional database cluster in a short time with a few commands, which we will demonstrate in this exercise. 
 
 ## Deploying Vertica on VKE
 
@@ -113,4 +113,6 @@ dbadmin=> select * from nodes;
 (3 rows)
 ```
 
-You can scale the database cluster with `kubectl edit`.  Simply edit the subclusters.size field to the new target size (CE license only allows 1-3 nodes); the database shards will be rebalanced automatically.  Monitor the cluster change with `kubectl wait`.
+Now that the database is running, you can add data with SQL commands like INSERT, and load files from S3 using COPY.  Since Vertica is already configured to access the S3 bucket where the database resides, you can discover DDL and import data from the bucket with a few commands.
+
+You can also scale the database cluster with `kubectl edit`.  Simply edit the subclusters.size field to the new target size (CE license only allows 1-3 nodes); the database shards will be rebalanced automatically.  Monitor the cluster change with `kubectl wait`.
