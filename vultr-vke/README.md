@@ -8,7 +8,7 @@ Vertica's architecture separates compute and storage allows cost-effective, scal
 
 ## Deploying Vertica on VKE
 
-To demonstrate the flexibility and compatibility of Vertica on Kubernetes and S3 object storage, this repository shows how to deploy Vertica on Vultr, a cloud platform that provides S3 object storage and Kubernetes infrastructure that meet standards but are not officially supported.
+To demonstrate the flexibility and compatibility of Vertica on Kubernetes and S3 object storage, this repository shows how to deploy Vertica on Vultr, a cloud platform that provides S3 object storage and Kubernetes infrastructure that meet standards but are not officially supported.  Read more about operating Vertica on Kubernetes at https://github.com/vertica/vertica-kubernetes
 
 Prerequisities for Vertica deployment:
 
@@ -112,3 +112,5 @@ dbadmin=> select * from nodes;
  v_vertdb_node0002 | 45035996273842976 | UP         | t          | f           | 10.244.156.68 | ipv4                | 10.244.156.68  | ipv4                  | /data/vertdb/v_vertdb_node0002_catalog/Catalog | PERMANENT | f            |                 | defaultsubcluster | 2022-02-23 22:57:57.528649+00 |                 | v11.1.0-0-669fd97287b9c05ae8b69656c04c16cffa268024
 (3 rows)
 ```
+
+You can scale the database cluster with `kubectl edit`.  Simply edit the subclusters.size field to the new target size (CE license only allows 1-3 nodes); the database shards will be rebalanced automatically.  Monitor the cluster change with `kubectl wait`.
