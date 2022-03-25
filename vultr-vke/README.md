@@ -2,9 +2,11 @@
 
 ## About Vertica
 
-Vertica is an industry-leading analytics platform providing fast, flexible, extensible, and SQL-compatible analytics on data lakes and data warehouses.  Learn more about Vertica at https://www.vertica.com/about/
+Vertica is an industry-leading analytics platform providing fast, flexible, extensible, and SQL-compatible analytics and machine learning on data lakes and data warehouses.  Learn more about Vertica at https://www.vertica.com/about/
 
-Vertica's architecture separates compute and storage allows cost-effective, scalable, secure and performant operation on cloud and containerized platforms like Kubernetes.  Vertica provides comprehensive open-source tooling to enable deployment and management on Kubernetes which allows deployment of a fully functional database cluster in a short time with a few commands, which we will demonstrate in this exercise. 
+Vertica's architecture separates compute and storage, allowing cost-effective, scalable, secure and performant operation on cloud and containerized platforms like Kubernetes.  Vertica provides comprehensive open-source tooling to enable deployment and management on Kubernetes which allows deployment of a fully functional database cluster in a short time with a few commands.  Learn more about containerized Vertica at https://www.vertica.com/docs/11.1.x/HTML/Content/Authoring/Containers/ContainerizedVertica.htm
+
+In this example, we will demonstrate how to deploy a Vertica CE cluster on Vultr Kubernetes Engine. 
 
 ## Deploying Vertica on VKE
 
